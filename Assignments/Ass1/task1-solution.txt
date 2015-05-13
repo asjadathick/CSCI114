@@ -1,0 +1,6 @@
+double discountedPrice;
+int qtyJuiceBottles;
+double distanceBetweenTwoCities;
+char grade;
+int population;
+

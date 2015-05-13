@@ -1,0 +1,49 @@
+Mohamed Asjad Athick
+4970512
+
+Lab 1 
+
+1. pwd can be used to print current working directory. This is the place in the filesystem the terminal is at. Unless you write absolute paths, all file paths in commands you write will be relative to the current working directory
+
+2.  If you're in the root directory, cd usr/bin
+
+3.  cd ~
+    cd ../../home/undergrad/m/mama158 
+
+4.  cp ../../../../etc/hosts ~ 
+    wc -l hosts  :to workout number of lines (9)
+
+5.  mv hosts foobar.txt
+
+6.  mkdir foobar
+    mv foobar.txt foobar/foobar.txt
+
+7.  rm foobar/foobar.txt
+
+8.  rmdir foobar
+
+9.  assuming you're in the /sbin directory
+    tree -i -L 1   : returns 0 directories, 197 files
+
+10.  If you're in your home directory. (if not, cd ~)
+     mkdir CSCI114
+     mkdir CSCI114/lab1
+
+11.  cd CSCI114/lab1
+     gedit lab1.txt &
+
+12.  37 bytes
+     ls -l (gives many details including file size, access rights and name/extension)
+
+13.  unzip lab1-main.zip
+
+14. g++ lab1-main.cpp
+
+15. ./a.out
+
+16. rm lab1-main.cpp a.out
+
+
+
+ 
+     

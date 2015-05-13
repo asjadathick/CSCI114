@@ -1,0 +1,26 @@
+Assumptions:
+Peg1 = blackPeg
+Peg2 = tempPeg
+Peg3 = whitePeg
+
+All moves will move the top most disk in a peg
+
+REPEAT
+	n= number of disks in tempPeg
+	if n is even then
+		move (n-1) disks from tempPeg to whitePeg
+		move 1 disk from tempPeg to blackPeg
+		move (n-1) disks from whitePeg to tempPeg
+	else
+		move (n-1) disks from tempPeg to blackPeg
+		move 1 disk from tempPeg to whitePeg
+		move (n-1) disks from blackPeg to tempPeg 	
+	UNTIL tempPeg is EMPTY AND blackPeg has only black disks
+
+//how move works
+PROCEDURE move (n, fromPeg, toPeg)
+	move (n-1) disks from fromPeg to tempPeg
+	move 1 disk from fromPeg to toPeg
+	move (n-1) disks from tempPeg to toPeg
+END PROCEDURE
+
