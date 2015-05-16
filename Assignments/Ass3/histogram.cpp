@@ -1,3 +1,15 @@
+/*
+Assignment 3
+File: histogram.cpp
+Author: Asjad Athick 4970512
+Dependency files: None
+
+Desc:
+
+Accepts a sequence of integers from 0-9, counts frequency of numbers
+and prints a histogram. Input safe.
+*/
+
 #include <iostream>
 using namespace std;
 
@@ -7,6 +19,7 @@ int main()
 	int data[10];
 	int max=0;
 	int maxIndex=0;
+	bool invalidInput=false;
 
 	//initialize array
 	for (int i=0; i<=9;i++)
@@ -17,49 +30,60 @@ int main()
 
 
 	cin>>input;
-	while (input!=-1)
+	while (input!=-1 && invalidInput==false)
 	{
-		data[input]++;
-		//cout<<"for input: " <<input << "value is: " << data[input]<<endl;
-		cin>>input;
+		if (input>=0 && input<=9)
+		{
+			//record occurences
+			data[input]++;
+			cin>>input;
+		}
+		else
+		{
+			invalidInput=true;
+		}
 	}
 
-	//output histogram
+	//output histogram if input was valid
 
-	do
+	if (invalidInput==false)
 	{
-		max=-1;
-		for (int i=0;i<=9;i++)
+		do
 		{
-			if (data[i]>max)
+			max=-1;
+			for (int i=0;i<=9;i++)
 			{
-				max=data[i];
+				if (data[i]>max)
+				{
+					max=data[i];
+				}
 			}
-		}
 
-		//cout<<"Max:"<<max<<endl;
 
-	if (max!=0){
-		for (int i=0; i<=9;i++)
-		{
-			if (data[i]==max)
-			{
-				cout<<"* ";
-				data[i]--;
+			if (max!=0){
+				for (int i=0; i<=9;i++)
+				{
+					if (data[i]==max)
+					{
+						cout<<"* ";
+						data[i]--;
+					}
+					else
+					{
+						cout<<"  ";
+					}
+				}
+				cout<<endl;
 			}
-			else
-			{
-				cout<<"  ";
-			}
-		}
-		cout<<endl;
+		}while(!(max==0));
+
+
+		cout << "-------------------"<<endl;
+		cout << "0 1 2 3 4 5 6 7 8 9"<<endl;
 	}
-	}while(!(max==0));
-	
-
-	cout << "-------------------"<<endl;
-	cout << "0 1 2 3 4 5 6 7 8 9"<<endl;
+	else
+	{
+		cout<<"Invalid input, only enter integers from 0 to 9." <<endl;
+	}
 	return 0;
 }
-
-//9 8 7 8 7 1 2 4 8 9 1 4 0 4 5 6 2 4 5 6 8 9 7 5 4 2 2 3 5 6 6 7 8 9 4 2 1 1 1 -1
