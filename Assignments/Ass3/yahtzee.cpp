@@ -1,3 +1,16 @@
+/*
+ Assignment 3
+ File: yahtzee.cpp
+ Author: Asjad Athick 4970512
+ Dependency files: yahtzee.h
+ 
+ Desc:
+ 
+ Implementation of the game Yahtzee with one re-roll.
+ Also input safe.
+ 
+ */
+
 #include "yahtzee.h"
 
 void setSeed()
@@ -6,21 +19,25 @@ void setSeed()
 
 	cout<<"Enter Seed: " << endl;
 	cin>>seed;
-	
-	if (!cin.good())
+
+	while (!cin.good())
 	{
-		cout<<"Invalid input: Please enter a long integer."<<endl;
-		emptyStream();
-		setSeed();
+		if (!cin.good())
+		{
+			cout<<"Invalid input: Please enter a long integer."<<endl;
+			emptyStream();
+			cout<<"Enter Seed: " << endl;
+			cin>>seed;
+		}
+
 	}
-	else
-	{
-		srand(seed);
-	}
+
+	srand(seed);
+
 }
 void rollDice(int diceValues[]) //functional
 {
-	//assign random nums to dice values
+    //assign random nums to dice values
 
 	for (int i=0; i<NUMBER_OF_DICE; i++)
 	{
@@ -29,293 +46,312 @@ void rollDice(int diceValues[]) //functional
 
 }
 
-bool reRollDice(int diceValues[]) //functional
+void reRollDice(int diceValues[])
 {
-	//returns false if re-roll fails
-	//assign new rand to selected dice.
-	//get input here
-	bool successful=true;
-
-	char rerollInstructions[NUMBER_OF_DICE];
-	int count=0;
 	char charBuffer;
+	bool successful=false;
+	char rerollInstructions[NUMBER_OF_DICE];
 
-	//prompts
-	cout<<"The dice were \t";
-	for (int i=0; i<NUMBER_OF_DICE;i++)
+	while (successful==false)
 	{
-		cout<<diceValues[i];
-	}
-	cout<<endl;
-
-	cout<<"What re-rolls? \t";
-		emptyStream(); //to ensure the stream isn't bad from the previous input
-
-
-	//is it worth writing a function for input safety?
-		while (count<NUMBER_OF_DICE)
+		successful=true;
+		cout << "The dice were \t";
+		for (int i=0; i<NUMBER_OF_DICE; i++)
 		{
-			charBuffer=cin.get();
-			if (charBuffer=='r' || charBuffer=='h' || charBuffer=='R' || charBuffer=='H')
-			{
-				if (charBuffer=='r'||charBuffer=='R')
-					diceValues[count]=(rand()%6)+1;
-				count++;
+			cout<<diceValues[i];
+		}
+		cout << endl;
+		cout << "What re-rolls? \t";
+		for (int i=0; i<NUMBER_OF_DICE; i++)
+		{
+			cin>>rerollInstructions[i];
+		}
 
-			}
-			else
+	//perform validation
+		for (int i=0;i<NUMBER_OF_DICE;i++)
+		{
+			if (!(rerollInstructions[i]=='r' || rerollInstructions[i]=='h' || rerollInstructions[i]=='R' || rerollInstructions[i]=='H'))
 			{
 				successful=false;
 			}
 		}
-		if (successful==true)
-		{
-			cout<<"The dice were \t";
-			for (int i=0; i<NUMBER_OF_DICE;i++)
-			{
-				cout<<diceValues[i];
-			}
-			cout<<endl;
-		}
-		return successful;
+
+
+		if (!successful)
+			cout<<"Invalid input: Only enter h to hold, or r to re-roll"<<endl;
+		emptyStream();
 	}
+
+	if (successful)
+	{
+		//do re-rolls
+		for (int count=0; count<NUMBER_OF_DICE; count++)
+		{
+
+			if (rerollInstructions[count]=='r'||rerollInstructions[count]=='R')
+				diceValues[count]=(rand()%6)+1;
+
+		}
+
+		cout<<"The dice were \t";
+		for (int i=0; i<NUMBER_OF_DICE;i++)
+		{
+			cout<<diceValues[i];
+		}
+		cout<<endl;
+	}
+
+}
 
 //methods for score calculation
-	void calculateScores(int input[], int scores[])
+void calculateScores(int input[], int scores[])
+{
+    //calls all score calculating methods
+	firstSix(input,scores);
+    //3 of a kind
+	scores[6]=ofaKind(input,3);
+    //4 of a kind
+	scores[7]=ofaKind(input,4);
+
+    //full house
+	scores[8]=fullHouse(input);
+    //small straight
+	scores[9]=smallStraight(input);
+    //large straight
+	scores[10]=largeStraight(input);
+    //yahtzee
+	scores[11]=yahtzee(input);
+    //chance
+	scores[12]=chance(input);
+
+}
+
+void printProjectedScores(int scores[])
+{
+	for (int i=0; i<13; i++)
 	{
-	//calls all score calculating methods
-		firstSix(input,scores);
-	//3 of a kind
-		scores[6]=ofaKind(input,3);
-	//4 of a kind
-		scores[7]=ofaKind(input,4);
-
-	//full house
-		scores[8]=fullHouse(input);
-	//small straight
-		scores[9]=smallStraight(input);
-	//large straight
-		scores[10]=largeStraight(input);
-	//yahtzee
-		scores[11]=yahtzee(input);
-	//chance
-		scores[12]=chance(input);
-
+		cout<<i+1<<"."<<"\t";
+		cout<<setw(20)<<left<<SCORE_CATEGORIES[i];
+		cout<<": " << scores[i]<<endl;
 	}
+}
 
-	void printProjectedScores(int scores[])
+int chooseCategory(bool categories[])
+{
+	int inputCategory=0;
+	bool categoryValid=false;
+	int result=0;
+
+	cout<<"Which category? ";
+	cin>>inputCategory;
+	while (!cin.good())
 	{
-		for (int i=0; i<13; i++)
+		if (!cin.good())
 		{
-			cout<<i+1<<"."<<"\t";
-			cout<<setw(20)<<left<<SCORE_CATEGORIES[i];
-			cout<<": " << scores[i]<<endl;
-		}
-	}
-
-	int chooseCategory(bool categories[])
-	{
-		int inputCategory=0;
-		bool categoryValid=false;
-		int result=0;
-
-		cout<<"Which category? ";
-
-		while (categoryValid==false)
-		{
+			cout<<"Invalid input: Please enter a long integer."<<endl;
+			emptyStream();
+			cout<<"Which category? ";
 			cin>>inputCategory;
-
-			if (inputCategory>0 && inputCategory<14)
-			{
-			//valid
-				if (categories[inputCategory-1]==false)
-				{
-					categories[inputCategory-1]=true;
-					categoryValid=true;
-				}
-			}
-			
-			if (categoryValid==false)
-			{
-				cout<<"Bad category Please retry? ";
-			}
-			else
-			{
-				result=inputCategory-1;
-			}
 		}
-		return result;
+
 	}
 
-	void recordAndPrintScore(int chosenCategory, int scores[], int& totalScore, int& bonusCatScore)
+
+	while (categoryValid==false)
 	{
-	//bonus calc
-		if (chosenCategory>0 && chosenCategory<7)
-			bonusCatScore+=scores[chosenCategory];
-
-	//normal total
-		totalScore+=scores[chosenCategory];
-		cout<<"Score recorded for round: " << scores[chosenCategory]<<endl;
-		cout<<"Score for first six Categories: " <<bonusCatScore<<endl;
-	}
-
-	void firstSix(int input[], int scores[])
-	{
-		for (int i=0; i<=NUMBER_OF_DICE; i++)
-		{
-			for (int j=0; j<=NUMBER_OF_DICE;j++)
-			{
-				if (input[i]==(j+1))
-					scores[input[i]-1]+=(j+1);
-			}
-		}
-	}
-
-	int ofaKind(int input[], int kind)
-	{
-		int returnVal=0;
-		int occurences[6];
-
-		initializeIntArray(occurences,6);
-
-		for (int i=0;i<NUMBER_OF_DICE;i++)
-		{
-			occurences[input[i]-1]++;
-		}
-
-
-		for (int i=0;i<NUMBER_OF_DICE;i++)
-		{
-			
-			if (occurences[i]>=kind)
-			{
-				returnVal= sumOfArray(input,NUMBER_OF_DICE);
-			}
-		}
-		return returnVal;
-	}
-
-	int fullHouse(int input[])
-	{
-		bool twoFound=false;
-		bool threeFound=false;
-		int occurences[6];
-
-		int result=0;
-
-		initializeIntArray(occurences,6);
-
-		for (int i=0; i<NUMBER_OF_DICE; i++)
-		{
-			occurences[input[i]-1]++;
-		}
-
 		
-		for (int i=0; i<6;i++)
-		{
-			if (occurences[i]==2)
-				twoFound=true;
-			if (occurences[i]==3)
-				threeFound=true;
-		}
-
-		if (twoFound&&threeFound)
-			result= 25;
-
-		return result;
-	}
-
-	int smallStraight(int input[])
-	{
-		int result=0;
-		int inputCopy[NUMBER_OF_DICE];
-		initializeIntArray(inputCopy,NUMBER_OF_DICE);
-		copyArray(inputCopy,input,NUMBER_OF_DICE);
-		sortArray(inputCopy,NUMBER_OF_DICE);
-		int compValue=inputCopy[0];
-		int compCount=0;
-
-	//compare with flag
 		
-
-		for (int i=0; i<NUMBER_OF_DICE;i++)
+		if (inputCategory>0 && inputCategory<14)
 		{
-			if (inputCopy[i]==compValue+1)
+            //valid
+			if (categories[inputCategory-1]==false)
 			{
-				compCount++;
+				categories[inputCategory-1]=true;
+				categoryValid=true;
 			}
-			else
-			{
-				compCount=0;
-			}
-
-			if (compCount==3)
-			{
-				//small straight
-				result=30;			
-			}
-			compValue=inputCopy[i];
-		}
-		return result;
-	}
-
-	int largeStraight(int input[])
-	{
-		int result=0;
-		int inputCopy[NUMBER_OF_DICE];
-		initializeIntArray(inputCopy,NUMBER_OF_DICE);
-		copyArray(inputCopy,input,NUMBER_OF_DICE);
-		sortArray(inputCopy,NUMBER_OF_DICE);
-		int compValue=inputCopy[0];
-		int compCount=0;
-
-	//compare with flag
-
-		for (int i=0; i<NUMBER_OF_DICE;i++)
-		{
-			if (inputCopy[i]==compValue+1)
-			{
-				compCount++;
-			}
-			else
-			{
-				compCount=0;
-			}
-
-			if (compCount==4)
-			{
-				//large straight
-				result=40;	
-			}
-			compValue=inputCopy[i];
-		}
-		return result;
-	}
-
-	int yahtzee(int input[])
-	{
-		int result=0;
-		int checkValue=input[0];
-		bool falseFlag=false;
-
-		for (int i=0; i<NUMBER_OF_DICE;i++)
-		{
-			if (!(input[i]==checkValue))
-				falseFlag=true;
 		}
 
-		if (!falseFlag)
-			result=50;
-
-		return result;
+		if (categoryValid==false)
+		{
+			cout<<"Bad category Please retry? ";
+		}
+		else
+		{
+			result=inputCategory-1;
+		}
 	}
+	return result;
+}
 
-	int chance(int input[])
+void recordAndPrintScore(int chosenCategory, int scores[], int& totalScore, int& bonusCatScore)
+{
+    //bonus calc
+	if (chosenCategory>=0 && chosenCategory<6)
+		bonusCatScore+=scores[chosenCategory];
+
+    //normal total
+	totalScore+=scores[chosenCategory];
+	cout<<"Score recorded for round: " << scores[chosenCategory]<<endl;
+	cout<<"Score for first six Categories: " <<bonusCatScore<<endl;
+}
+
+void firstSix(int input[], int scores[])
+{
+	for (int i=0; i<=NUMBER_OF_DICE; i++)
 	{
-		return sumOfArray(input,NUMBER_OF_DICE);
+		for (int j=0; j<=NUMBER_OF_DICE;j++)
+		{
+			if (input[i]==(j+1))
+				scores[input[i]-1]+=(j+1);
+		}
+	}
+}
+
+int ofaKind(int input[], int kind)
+{
+	int returnVal=0;
+	int occurences[6];
+
+	initializeIntArray(occurences,6);
+
+	for (int i=0;i<NUMBER_OF_DICE;i++)
+	{
+		occurences[input[i]-1]++;
 	}
 
-void initializeIntArray(int array[],int upperBound) //functional
+
+	for (int i=0;i<NUMBER_OF_DICE;i++)
+	{
+
+		if (occurences[i]>=kind)
+		{
+			returnVal= sumOfArray(input,NUMBER_OF_DICE);
+		}
+	}
+	return returnVal;
+}
+
+int fullHouse(int input[])
+{
+	bool twoFound=false;
+	bool threeFound=false;
+	int occurences[6];
+
+	int result=0;
+
+	initializeIntArray(occurences,6);
+
+	for (int i=0; i<NUMBER_OF_DICE; i++)
+	{
+		occurences[input[i]-1]++;
+	}
+
+
+	for (int i=0; i<6;i++)
+	{
+		if (occurences[i]==2)
+			twoFound=true;
+		if (occurences[i]==3)
+			threeFound=true;
+	}
+
+	if (twoFound&&threeFound)
+		result= 25;
+
+	return result;
+}
+
+int smallStraight(int input[])
+{
+	int result=0;
+	int inputCopy[NUMBER_OF_DICE];
+	initializeIntArray(inputCopy,NUMBER_OF_DICE);
+	copyArray(inputCopy,input,NUMBER_OF_DICE);
+	sortArray(inputCopy,NUMBER_OF_DICE);
+	int compValue=inputCopy[0];
+	int compCount=0;
+
+    //compare with flag
+
+
+	for (int i=0; i<NUMBER_OF_DICE;i++)
+	{
+		if (inputCopy[i]==compValue+1)
+		{
+			compCount++;
+		}
+		else
+		{
+			compCount=0;
+		}
+
+		if (compCount==3)
+		{
+            //small straight
+			result=30;
+		}
+		compValue=inputCopy[i];
+	}
+	return result;
+}
+
+int largeStraight(int input[])
+{
+	int result=0;
+	int inputCopy[NUMBER_OF_DICE];
+	initializeIntArray(inputCopy,NUMBER_OF_DICE);
+	copyArray(inputCopy,input,NUMBER_OF_DICE);
+	sortArray(inputCopy,NUMBER_OF_DICE);
+	int compValue=inputCopy[0];
+	int compCount=0;
+
+    //compare with flag
+
+	for (int i=0; i<NUMBER_OF_DICE;i++)
+	{
+		if (inputCopy[i]==compValue+1)
+		{
+			compCount++;
+		}
+		else
+		{
+			compCount=0;
+		}
+
+		if (compCount==4)
+		{
+            //large straight
+			result=40;
+		}
+		compValue=inputCopy[i];
+	}
+	return result;
+}
+
+int yahtzee(int input[])
+{
+	int result=0;
+	int checkValue=input[0];
+	bool falseFlag=false;
+
+	for (int i=0; i<NUMBER_OF_DICE;i++)
+	{
+		if (!(input[i]==checkValue))
+			falseFlag=true;
+	}
+
+	if (!falseFlag)
+		result=50;
+
+	return result;
+}
+
+int chance(int input[])
+{
+	return sumOfArray(input,NUMBER_OF_DICE);
+}
+
+void initializeIntArray(int array[],int upperBound) 
 {
 	for (int i=0; i<upperBound;i++)
 	{
@@ -349,7 +385,7 @@ void sortArray(int array[], int ARRAY_SIZE)
 
 	while (numSorted<ARRAY_SIZE)
 	{
-                //find smallest element in unsorted
+        //find smallest element in unsorted
 		minIndex=numSorted;
 		for (int i=numSorted+1; i<ARRAY_SIZE; i++)
 		{
@@ -358,7 +394,7 @@ void sortArray(int array[], int ARRAY_SIZE)
 				minIndex=i;
 			}
 		}
-                //swap
+        //swap
 		if (minIndex!=0)
 		{
 			temp=array[numSorted];
@@ -371,7 +407,6 @@ void sortArray(int array[], int ARRAY_SIZE)
 }
 
 
-
 void outputArray(int array[], int upperBound) //functional
 {
 	for (int i=0; i<upperBound;i++)
@@ -382,18 +417,6 @@ void outputArray(int array[], int upperBound) //functional
 
 void emptyStream()
 {
-	/*
-	char a;
-	cin.clear();
-	do
-	{
-		a=cin.get();
-		cin.clear();
-	}while (a=='\0');
-	cin.clear();
-	*/
 	cin.clear();
 	cin.ignore(1000, '\n');
-
-
 }

@@ -1,3 +1,16 @@
+/*
+ Assignment 3
+ File: yahtzee.h
+ Author: Asjad Athick 4970512
+ Dependency files: implementation: yahtzee.cpp
+ 
+ Desc:
+ 
+ Header of implementation of the game Yahtzee with one re-roll.
+ Also input safe.
+ 
+ */
+
 #include <iostream>
 #include <iomanip>
 
@@ -5,26 +18,26 @@ using namespace std;
 
 const int NUMBER_OF_DICE = 5;
 const char SCORE_CATEGORIES[13][30]=
-	{
-		{"Aces"},
-		{"Twos"},
-		{"Threes"},
-		{"Fours"},
-		{"Fives"},
-		{"Sixes"},
-		{"3 of a kind"},
-		{"4 of a kind"},
-		{"Full House"},
-		{"Small Straight"},
-		{"Large Straight"},
-		{"Yahtzee"},
-		{"Chance"}
-	};
+{
+    {"Aces"},
+    {"Twos"},
+    {"Threes"},
+    {"Fours"},
+    {"Fives"},
+    {"Sixes"},
+    {"3 of a kind"},
+    {"4 of a kind"},
+    {"Full House"},
+    {"Small Straight"},
+    {"Large Straight"},
+    {"Yahtzee"},
+    {"Chance"}
+};
 
 //program method prototypes
 void setSeed();
 void rollDice(int diceValues[]);
-bool reRollDice(int diceValues[]);
+void reRollDice(int diceValues[]);
 void calculateScores(int input[], int scores[]);
 void printProjectedScores(int scores[]);
 int chooseCategory(bool categories[]);
