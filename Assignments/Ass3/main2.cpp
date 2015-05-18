@@ -47,7 +47,6 @@ void sortArray(int array[], int ARRAY_SIZE);
 void outputArray(int array[], int upperBound);
 void emptyStream();
 
-#include "yahtzee.h"
 
  int main()
  {
@@ -64,7 +63,7 @@ void emptyStream();
     
     setSeed();
     
-    //populate dice array with random numbers
+    //game loop
     for (int i=1; i<=13 && successfulInput==true; i++)
     {
         //initialization/declarations
