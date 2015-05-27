@@ -3,10 +3,25 @@
 #include "CDWebUtilities.h"
 #include "CDWeb.h"
 
+bool stringStreamCleared=false;
+
 void clearStream()
 {
     cin.clear();
     cin.ignore(1000,'\n');
+    cin.putback('\n');
+    
+       
+    
+}
+
+void clearStreamForStrings()
+{
+    if (cin.peek()=='\n')
+    {
+        cin.ignore();
+    }
+    
 }
 
 int inputInt()
@@ -41,6 +56,7 @@ unsigned int inputUnsignedInt()
 
 float inputFloat()
 {
+    
     clearStream();
     float input;
     cin>>input;
@@ -57,14 +73,27 @@ float inputFloat()
 
 string inputString()
 {
-    clearStream();
+    clearStreamForStrings();
     
-    char input[256];
+    char str[256];
     string result;
-    cin.getline(input, 256, '\n');
-    result=input;
+    cin.getline(str, 256);
+    return str;
     
+    /*
+    char input[256];
+    char inputBuffer;
+    int count=0;
+    inputBuffer=cin.get();
+    while (inputBuffer!='\n' && count<254)
+    {
+        input[count]=inputBuffer;
+        count++;
+        inputBuffer=cin.get();
+    }
+    input[count]='\0';
+    return input;
+*/
     
-    return result;
-
+     
 }

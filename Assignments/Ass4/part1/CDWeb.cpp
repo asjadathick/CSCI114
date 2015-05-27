@@ -23,60 +23,68 @@ void LoadDB()
     ifstream CDWebFile;
     CDWebFile.open(fileName);
     
-    string inputBuffer;
-    int lineCount=0, recordCount=0;
-    
-    getline(CDWebFile, inputBuffer, '\n');
-    while (!CDWebFile.eof() && recordCount<=200)
+    if (!CDWebFile)
     {
-        //id
-        data[recordCount].id=stof(inputBuffer);
-        lineCount++;
-        
-        //title
-        getline(CDWebFile, inputBuffer, '\n');
-        data[recordCount].title=inputBuffer;
-        lineCount++;
-        
-        //recording artist
-        getline(CDWebFile, inputBuffer, '\n');
-        data[recordCount].recordingArtist=inputBuffer;
-        lineCount++;
-        
-        //durationmin
-        getline(CDWebFile, inputBuffer, ' ');
-        data[recordCount].durationMin=stof(inputBuffer);
-        lineCount++;
-        
-        //durationsec
-        getline(CDWebFile, inputBuffer, '\n');
-        data[recordCount].durationSec=stof(inputBuffer);
-        lineCount++;
-        
-        //listprice
-        getline(CDWebFile, inputBuffer, '\n');
-        data[recordCount].listPrice=stof(inputBuffer);
-        lineCount++;
-        
-        //stock
-        getline(CDWebFile, inputBuffer, '\n');
-        data[recordCount].stock=stof(inputBuffer);
-        lineCount++;
-        
-        //genre
-        getline(CDWebFile, inputBuffer, '\n');
-        data[recordCount].genre=inputBuffer;
-        lineCount++;
-        
-        //change inuse flag
-        data[recordCount].inUse=true;
-        
-        recordCount++;
-        
-        getline(CDWebFile, inputBuffer, '\n');
+        cout<<"File could not be opened. No records loaded."<<endl;
     }
-    
-    cout<<recordCount<< " records loaded." <<endl;
+    else
+    {
+        string inputBuffer;
+        int lineCount=0, recordCount=0;
+        
+        getline(CDWebFile, inputBuffer, '\n');
+        while (!CDWebFile.eof() && recordCount<=200)
+        {
+            //id
+            data[recordCount].id=stof(inputBuffer);
+            lineCount++;
+            
+            //title
+            getline(CDWebFile, inputBuffer, '\n');
+            data[recordCount].title=inputBuffer;
+            lineCount++;
+            
+            //recording artist
+            getline(CDWebFile, inputBuffer, '\n');
+            data[recordCount].recordingArtist=inputBuffer;
+            lineCount++;
+            
+            //durationmin
+            getline(CDWebFile, inputBuffer, ' ');
+            data[recordCount].durationMin=stof(inputBuffer);
+            lineCount++;
+            
+            //durationsec
+            getline(CDWebFile, inputBuffer, '\n');
+            data[recordCount].durationSec=stof(inputBuffer);
+            lineCount++;
+            
+            //listprice
+            getline(CDWebFile, inputBuffer, '\n');
+            data[recordCount].listPrice=stof(inputBuffer);
+            lineCount++;
+            
+            //stock
+            getline(CDWebFile, inputBuffer, '\n');
+            data[recordCount].stock=stof(inputBuffer);
+            lineCount++;
+            
+            //genre
+            getline(CDWebFile, inputBuffer, '\n');
+            data[recordCount].genre=inputBuffer;
+            lineCount++;
+            
+            //change inuse flag
+            data[recordCount].inUse=true;
+            
+            recordCount++;
+            
+            getline(CDWebFile, inputBuffer, '\n');
+        }
+        
+        cout<<recordCount<< " records loaded." <<endl;
+
+    }
     
 }
 void YourAddCD()
@@ -208,7 +216,10 @@ void YourDisplayCD()
 }
 void YourList()
 {
-    
+    for (int i=0; i<10; i++)
+    {
+        cout<<"Input: " << inputInt()<<endl;
+    }
 }
 void YourStoreDB()
 {
